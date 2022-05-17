@@ -7,5 +7,4 @@ _RAM_[1]=98;
 _1: printf("%c", (char) _RAM_[0]);
 printf("%c", (char) _RAM_[1]);
 _RAM_[3]=_RAM_[3]+1;
-if(_RAM_[3]<10){goto *((void*[]){&&_0,&&_1})[1];}
 }

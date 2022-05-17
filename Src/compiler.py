@@ -13,6 +13,7 @@ operators = ["+","-","/","*","~","|","&","^","||","&&", "=", "!", ">", "<"]
 intchars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"] 
 labelarray = []
 largest_index = -1
+cpynumber = 0
 
 
 def CompilerSettings():
@@ -25,7 +26,7 @@ def CompilerSettings():
     outfile.write(vartype + " _RAM_[" + memorysize + "];\n")
 
 def EndFile():
-    outfile.write("}")
+    outfile.write("return 0;}")
     outfile.close()
 
 def Ramreplace(phrases):
@@ -137,8 +138,12 @@ def LineHandle(index, largest_index):
             print(labelarray)
             #crap, this might rely on the compiler computing
             outfile.write(stvar + "})[" +  str(phrasestrings[0]) + "];}\n") # this code only works for consecutive values
-        elif fsplit[0] == "in":
-             outfile.write('scanf("%c",_RAM_['+phrasestrings[0]+']);\n')
+            #learn how scanf works
+        #elif fsplit[0] == "in":
+             #outfile.write('scanf("%c",_RAM_['+phrasestrings[0]+']);\n')
+        elif fsplit[0] == "cpy":
+            outfile.write(vartype + " i=0;_cpy" + str(cpynumber) + ":_RAM_[i+" + phrasestrings[1] +"]=_RAM_[i+" + phrasestrings[0] +"];i++;if(i=="+ phrasestrings[2] +"){goto _cpy" + str(cpynumber) + ";}\n")
+            cpynumber+=1
 
         i+=1
 

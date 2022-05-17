@@ -1,4 +1,3 @@
-from cProfile import label
 import sys
 import string, binascii
 infile = open(sys.argv[1], "r")
@@ -102,7 +101,7 @@ def LineHandle(index, largest_index):
     i = 0
     while i < len(sublines):
         #print("subline(" + str(i) + ")" + sublines[i])
-        sublines[i] = clearspace(sublines[i]) # put remove whitespace here
+        sublines[i] = clearspace(sublines[i]) #removes whitespace
         splitparts = sublines[i].split(">")
         if (len(sublines[i]) == 0):
             i+=1
@@ -123,12 +122,17 @@ def LineHandle(index, largest_index):
         phrases = fsplit[1].split(",")
         phrasestrings = Ramreplace(phrases)
         #number evaluation before function, leave most of it to c
-        if fsplit[0] == "set":
+
+        if fsplit[0] == "set": #changes the value of an address (Address to set, Value to set)
                 outfile.write("_RAM_[" + phrasestrings[0] + "]=" + phrasestrings[1] + ";\n")
-        elif fsplit[0] == "out":
+
+        elif fsplit[0] == "out": #outputs a character to the console[currently] (Char value to output) 
                 outfile.write('printf("%c", (char) ' +  phrasestrings[0] + ");\n")
-        #c extention computed gotos    goto *((void*[]){&&label, &&babel})[1];
-        elif fsplit[0] == "jmp":    
+        #c extention not stable
+        #either figure out how to jump to later code, or pick where to start execution
+
+        elif fsplit[0] == "jmp":    # moves the program pointer (Label to jump to, condition (0=false else=true))
+            # this code only works for consecutive labels
             f = 0
             stvar = "if(" + phrasestrings[1] + "){goto *((void*[]){"
             while (f < len(labelarray)):
@@ -137,18 +141,20 @@ def LineHandle(index, largest_index):
                     stvar+=","
                 f+=1
             print(labelarray)
-            #crap, this might rely on the compiler computing
-            outfile.write(stvar + "})[" +  str(phrasestrings[0]) + "];}\n") # this code only works for consecutive values
+            outfile.write(stvar + "})[" +  str(phrasestrings[0]) + "];}\n") 
+
             #learn how scanf works
         #elif fsplit[0] == "in":
              #outfile.write('scanf("%c",_RAM_['+phrasestrings[0]+']);\n')
-        elif fsplit[0] == "cpy":
+
+        elif fsplit[0] == "cpy": # copies a set of values from consecutive memory addresses to elsewhere in memory (old first address, new first address, length )
             outfile.write("i=0;_cpy" + str(cpynumber) + ":_RAM_[i+" + phrasestrings[1] +"]=_RAM_[i+" + phrasestrings[0] +"];i++;if(i!="+ phrasestrings[2] +"){goto _cpy" + str(cpynumber) + ";}\n")
             cpynumber+=1
-        elif fsplit[0] == "mout":
+
+        elif fsplit[0] == "mout": # outputs a set of values from consecutive memory addresses to the console (first address, length )
             outfile.write("i=0;_mout" + str(moutnumber) + ':printf("%c", (char) _RAM_[i+' + phrasestrings[0] +"]);i++;if(i!="+ phrasestrings[1] +"){goto _mout" + str(moutnumber) + ";}\n")
             moutnumber+=1
-        #a function to load many variables into memory would be nice
+        #a function to load many variables into memory would be nice; just count phrases and have length baked into c
 
         i+=1
 

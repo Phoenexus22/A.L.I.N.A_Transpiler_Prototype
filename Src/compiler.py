@@ -1,3 +1,4 @@
+#argument order:  source file, compiled file, memory type, memory size
 import sys
 import string, binascii
 infile = open(sys.argv[1], "r")
@@ -14,8 +15,7 @@ labelarray = []
 largest_index = -1
 cpynumber = 0
 moutnumber = 0
- #prototype order:  source file, future file, memory bitwidth, memory size
-if sys.argv[3] in ["u8", "u16", "u32", "u64", "u1", "i8", "i16", "i32", "i64"]:
+if sys.argv[3] in ["u8", "u16", "u32", "u64", "i8", "i16", "i32", "i64"]:
     vartype = sys.argv[3]
 else:
     raise Exception("Invalid Datatype")
@@ -24,22 +24,29 @@ outfile.write(vartype + " _RAM_[" + memorysize + "];\n")
 outfile.write(vartype + " i;\n")
 
 def EndFile():
-    outfile.write("return 0;}")
+    outfile.write("return 0;\n}")
     outfile.close()
 
 def Ramreplace(phrases):
-    phrasestrings = ["", "", "", ""]
+    phrasestrings = [] 
     n = 0
     while n < len(phrases):
-            phrasestrings[n] = ""
+            phrasestrings.append("")
             spstrig = list(phrases[n])
-            print(spstrig)
+            #print(spstrig)
             blayers = 0
+            incomment = False
             lorder = [] # -1 means a num linked value. any other int implies the layer its bound to
             x = 0
             while x < len(spstrig):
-
-                if (spstrig[x] == "$"):
+                if (spstrig[x] == '#'):  
+                    incomment = not incomment
+                    x+=1
+                    continue
+                elif(incomment):
+                    x+=1
+                    continue
+                elif (spstrig[x] == "$"):
                     phrasestrings[n]+="_RAM_["
                     if (spstrig[x] == "("):
                         lorder.append(blayers+1)
@@ -76,6 +83,7 @@ def Ramreplace(phrases):
 
                 else:
                     phrasestrings[n] +=spstrig[x]
+
                 if (x == len(spstrig)-1 and (len(lorder) > 0)):
                    while(len(lorder) > 0):
                        lorder.pop()
@@ -154,8 +162,12 @@ def LineHandle(index, largest_index):
         elif fsplit[0] == "mout": # outputs a set of values from consecutive memory addresses to the console (first address, length )
             outfile.write("i=0;_mout" + str(moutnumber) + ':printf("%c", (char) _RAM_[i+' + phrasestrings[0] +"]);i++;if(i!="+ phrasestrings[1] +"){goto _mout" + str(moutnumber) + ";}\n")
             moutnumber+=1
-        #a function to load many variables into memory would be nice; just count phrases and have length baked into c
 
+        elif fsplit[0] == "mset":
+            p = 1
+            while p < len(phrasestrings):
+                outfile.write("_RAM_[" + phrasestrings[0] + "+" + str(p) + "-1]=" + phrasestrings[p] + ";\n")
+                p+=1
         i+=1
 
     

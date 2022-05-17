@@ -9,13 +9,13 @@ outfile.write('#include "typedef.h"\n')
 outfile.write('int main(int argc, char *argv[]){\n')
 global vartype
 memorysize = ""
-operators = ["+","-","/","*","~","|","&","^","||","&&", "=", "!", ">", "<"]
+operators = ["+","-","/","*","~","|","&","^","||","&&", "=", "!", ">", "<", "%"]
 intchars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"] 
 labelarray = []
 largest_index = -1
 cpynumber = 0
 moutnumber = 0
-if sys.argv[3] in ["u8", "u16", "u32", "u64", "i8", "i16", "i32", "i64"]:
+if sys.argv[3] in ["u8", "u16", "u32", "u64", "i8", "i16", "i32", "i64", "f32", "f64"]:
     vartype = sys.argv[3]
 else:
     raise Exception("Invalid Datatype")
@@ -39,7 +39,7 @@ def Ramreplace(phrases):
             lorder = [] # -1 means a num linked value. any other int implies the layer its bound to
             x = 0
             while x < len(spstrig):
-                if (spstrig[x] == '#'):  
+                if (spstrig[x] == '?'):  
                     incomment = not incomment
                     x+=1
                     continue
@@ -80,6 +80,8 @@ def Ramreplace(phrases):
 
                 elif(spstrig[x] == "="):
                     phrasestrings[n] +="=="
+                elif(spstrig[x] == "#"):
+                    phrasestrings[n] +="0x"
 
                 else:
                     phrasestrings[n] +=spstrig[x]

@@ -7,23 +7,22 @@ outfile = open(sys.argv[2], "w")
 outfile.write('#include <stdio.h>\n')
 outfile.write('#include "typedef.h"\n')
 outfile.write('int main(int argc, char *argv[]){\n')
-vartype = ""
+global vartype
 memorysize = ""
 operators = ["+","-","/","*","~","|","&","^","||","&&", "=", "!", ">", "<"]
 intchars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"] 
 labelarray = []
 largest_index = -1
 cpynumber = 0
-
-
-def CompilerSettings():
-    #prototype order:  source file, future file, memory bitwidth, memory size
-    if sys.argv[3] in ["u8", "u16", "u32", "u64", "u1", "i8", "i16", "i32", "i64"]:
-        vartype = sys.argv[3]
-    else:
-        raise Exception("Invalid Datatype")
-    memorysize = sys.argv[4]
-    outfile.write(vartype + " _RAM_[" + memorysize + "];\n")
+moutnumber = 0
+ #prototype order:  source file, future file, memory bitwidth, memory size
+if sys.argv[3] in ["u8", "u16", "u32", "u64", "u1", "i8", "i16", "i32", "i64"]:
+    vartype = sys.argv[3]
+else:
+    raise Exception("Invalid Datatype")
+memorysize = sys.argv[4]
+outfile.write(vartype + " _RAM_[" + memorysize + "];\n")
+outfile.write(vartype + " i;\n")
 
 def EndFile():
     outfile.write("return 0;}")
@@ -97,6 +96,8 @@ def clearspace(invar):
 
 #.encode("utf-8").hex()
 def LineHandle(index, largest_index):
+    global cpynumber
+    global moutnumber
     sublines = lines[index].split(";")
     i = 0
     while i < len(sublines):
@@ -142,16 +143,18 @@ def LineHandle(index, largest_index):
         #elif fsplit[0] == "in":
              #outfile.write('scanf("%c",_RAM_['+phrasestrings[0]+']);\n')
         elif fsplit[0] == "cpy":
-            outfile.write(vartype + " i=0;_cpy" + str(cpynumber) + ":_RAM_[i+" + phrasestrings[1] +"]=_RAM_[i+" + phrasestrings[0] +"];i++;if(i=="+ phrasestrings[2] +"){goto _cpy" + str(cpynumber) + ";}\n")
+            outfile.write("i=0;_cpy" + str(cpynumber) + ":_RAM_[i+" + phrasestrings[1] +"]=_RAM_[i+" + phrasestrings[0] +"];i++;if(i!="+ phrasestrings[2] +"){goto _cpy" + str(cpynumber) + ";}\n")
             cpynumber+=1
+        elif fsplit[0] == "mout":
+            outfile.write("i=0;_mout" + str(moutnumber) + ':printf("%c", (char) _RAM_[i+' + phrasestrings[0] +"]);i++;if(i!="+ phrasestrings[1] +"){goto _mout" + str(moutnumber) + ";}\n")
+            moutnumber+=1
+        #a function to load many variables into memory would be nice
 
         i+=1
 
     
 
 
-    
-CompilerSettings()
 i = 0
 while (i < len(lines)):
     LineHandle(i, largest_index)

@@ -7,6 +7,6 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 typedef uint16_t u16;
 typedef uint8_t u8;
-typedef bool u1;
+//typedef bool u1;
 typedef float f32;// sign bit, 23sf, 8 exp
 typedef double f64;//sign bit, 52sf, 11 exp

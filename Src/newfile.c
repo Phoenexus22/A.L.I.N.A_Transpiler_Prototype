@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "typedef.h"
 int main(int argc, char *argv[]){
-i32 _RAM_[2048];
+u32 _RAM_[2048];
 _0: _RAM_[0]=97;
 _RAM_[1]=98;
 _1: printf("%c", (char) _RAM_[0]);

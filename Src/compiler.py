@@ -2,7 +2,7 @@
 import sys
 import string, binascii
 infile = open(sys.argv[1], "r")
-lines = infile.readlines()
+lines = infile.read()
 outfile = open(sys.argv[2], "w")
 outfile.write('#include <stdio.h>\n')
 outfile.write('#include "typedef.h"\n')
@@ -18,7 +18,7 @@ moutnumber = 0
 if sys.argv[3] in ["u8", "u16", "u32", "u64", "i8", "i16", "i32", "i64", "f32", "f64"]:
     vartype = sys.argv[3]
 else:
-    raise Exception("Invalid Datatype")
+    raise Exception("CompilerError: Invalid Datatype")
 memorysize = sys.argv[4]
 outfile.write(vartype + " _RAM_[" + memorysize + "];\n")
 outfile.write(vartype + " i;\n")
@@ -35,18 +35,10 @@ def Ramreplace(phrases):
             spstrig = list(phrases[n])
             #print(spstrig)
             blayers = 0
-            incomment = False
             lorder = [] # -1 means a num linked value. any other int implies the layer its bound to
             x = 0
             while x < len(spstrig):
-                if (spstrig[x] == '?'):  
-                    incomment = not incomment
-                    x+=1
-                    continue
-                elif(incomment):
-                    x+=1
-                    continue
-                elif (spstrig[x] == "$"):
+                if (spstrig[x] == "$"):
                     phrasestrings[n]+="_RAM_["
                     if (spstrig[x] == "("):
                         lorder.append(blayers+1)
@@ -101,13 +93,26 @@ def clearspace(invar):
         invar = invar.replace(elem,"")
     return invar
 
+def remcomments(input):
+    spl = input.split("?")
+    if (spl%2==0):
+        raise Exception("SyntaxError: Comment Character (?) without partner")
+    output = ""
+    i = 0
+    while i < len(spl):
+        output+=spl[i]
+        i+=2
+    return output
+
 
 
 #.encode("utf-8").hex()
-def LineHandle(index, largest_index):
+def LineHandle(largest_index):
     global cpynumber
     global moutnumber
-    sublines = lines[index].split(";")
+    global lines
+    lines = remcomments(lines)
+    sublines = lines.split(";")
     i = 0
     while i < len(sublines):
         #print("subline(" + str(i) + ")" + sublines[i])
@@ -125,7 +130,7 @@ def LineHandle(index, largest_index):
                 largest_index = int(splitparts[0])
                 labelarray.append(int(splitparts[0]))
             else:
-                raise Exception("Non-Linear line progression at line " + splitparts[0])
+                raise Exception("SyntaxError: Non-Linear line progression at line " + splitparts[0])
         else:
             splitparts.insert(0,"")
         fsplit = splitparts[1].split(":")
@@ -182,8 +187,6 @@ def LineHandle(index, largest_index):
     
 
 
-i = 0
-while (i < len(lines)):
-    LineHandle(i, largest_index)
-    i+=1
+
+LineHandle( largest_index)
 EndFile() 

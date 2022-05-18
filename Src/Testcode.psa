@@ -1,5 +1,5 @@
 0>mset:0,'a','b','c','d';
-mout:0,4;
+vout:0,4;
 cpy:0,#f,4;
-mout:#f,4; 
-1>jmp:1,1;
+vout:#f,4;
+die:0; 

@@ -24,7 +24,7 @@ outfile.write(vartype + " _RAM_[" + memorysize + "];\n")
 outfile.write(vartype + " i;\n")
 
 def EndFile():
-    outfile.write("return 0;\n}")
+    outfile.write("\n}")
     outfile.close()
 
 def Ramreplace(phrases):
@@ -161,14 +161,21 @@ def LineHandle(index, largest_index):
             outfile.write("i=0;_cpy" + str(cpynumber) + ":_RAM_[i+" + phrasestrings[1] +"]=_RAM_[i+" + phrasestrings[0] +"];i++;if(i!="+ phrasestrings[2] +"){goto _cpy" + str(cpynumber) + ";}\n")
             cpynumber+=1
 
-        elif fsplit[0] == "mout": # outputs a set of values from consecutive memory addresses to the console (first address, length )
+        elif fsplit[0] == "vout": # outputs a set of values from consecutive memory addresses to the console (first address, length )
             outfile.write("i=0;_mout" + str(moutnumber) + ':printf("%c", (char) _RAM_[i+' + phrasestrings[0] +"]);i++;if(i!="+ phrasestrings[1] +"){goto _mout" + str(moutnumber) + ";}\n")
             moutnumber+=1
 
-        elif fsplit[0] == "mset":
+        elif fsplit[0] == "mset": #moves multiple values into memory
             p = 1
             while p < len(phrasestrings):
                 outfile.write("_RAM_[" + phrasestrings[0] + "+" + str(p) + "-1]=" + phrasestrings[p] + ";\n")
+                p+=1
+        elif fsplit[0] == "die":
+            outfile.write("return " + phrasestrings[0] +";\n")
+        elif fsplit[0] == "mout":
+            p = 0
+            while p < len(phrasestrings):
+                outfile.write('printf("%c",(char) ' + phrasestrings[p] + ');\n')
                 p+=1
         i+=1
 

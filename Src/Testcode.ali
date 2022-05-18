@@ -1,4 +1,4 @@
-0> ?StartOfFile?
+0>?StartOfFile?
     mset:0,'a','b','c','d';
     vout:0,4;
     cpy:0,#f,4;

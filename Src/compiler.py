@@ -95,7 +95,7 @@ def clearspace(invar):
 
 def remcomments(input):
     spl = input.split("?")
-    if (spl%2==0):
+    if (len(spl)%2==0):
         raise Exception("SyntaxError: Comment Character (?) without partner")
     output = ""
     i = 0
@@ -177,6 +177,7 @@ def LineHandle(largest_index):
                 p+=1
         elif fsplit[0] == "die":
             outfile.write("return " + phrasestrings[0] +";\n")
+
         elif fsplit[0] == "mout":
             p = 0
             while p < len(phrasestrings):

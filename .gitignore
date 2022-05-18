@@ -1,3 +1,5 @@
 .vscode
 compile.ps1
 /Src/compile.ps1
+/Src/linux.run
+/Src/exec.exe

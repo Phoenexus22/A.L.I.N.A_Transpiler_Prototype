@@ -1,8 +1,8 @@
 0>?StartOfFile?
-    mout:'b','a','n','a','n','a','\n';
+    mout:"banana",'\n';
     jmp:2,1;
 1>?pineapple?
-    mout:'p','i','n','e','a','p','p','l','e','\n';
+    mout:"pineapple",'\n';
 2>?apple?
-    mout:'a','p','p','l','e','\n';
+    mout:"apple",'\n';
 

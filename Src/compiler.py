@@ -27,6 +27,17 @@ def EndFile():
     outfile.write("\n}")
     outfile.close()
 
+def makecsc(instring):
+    i = 0
+    accum = ''
+    while (i < len(instring)):
+        accum += "'" + instring[i] + "'"
+        if (i!=len(instring)-1):
+            accum+=','
+        i+=1
+    return accum
+
+
 def Ramreplace(phrases):
     phrasestrings = [] 
     n = 0
@@ -104,6 +115,20 @@ def remcomments(input):
         i+=2
     return output
 
+def stringhandle(input):
+    spl = input.split('"')
+    if (len(spl)%2==0):
+        raise Exception('SyntaxError: String Character (") without partner')
+    output = ""
+    i = 0
+    while i < len(spl):
+        if(not(i%2==0)):
+            output+=makecsc(spl[i])
+        else:
+            output+=spl[i]
+        i+=1
+    return output
+
 def makelabelarray(srclines):
     prev=-1
     go = True
@@ -131,12 +156,15 @@ def makelabelarray(srclines):
 
 
 
+
 #.encode("utf-8").hex()
 def LineHandle(largest_index):
     global cpynumber
     global moutnumber
     global lines
     lines = remcomments(lines)
+    lines = stringhandle(lines)
+    print(lines)
     labelarray = makelabelarray(lines)
     sublines = lines.split(";")
     i = 0

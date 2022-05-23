@@ -1,6 +1,8 @@
 0>?StartOfFile?
-    mset:0,'a','b','c','d';
-    vout:0,4;
-    cpy:0,#f,4;
-    vout:#f,4;
-    die:0; 
+    mout:'b','a','n','a','n','a','\n';
+    jmp:2,1;
+1>?pineapple?
+    mout:'p','i','n','e','a','p','p','l','e','\n';
+2>?apple?
+    mout:'a','p','p','l','e','\n';
+

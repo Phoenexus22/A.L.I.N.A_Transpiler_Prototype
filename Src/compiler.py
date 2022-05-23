@@ -104,6 +104,31 @@ def remcomments(input):
         i+=2
     return output
 
+def makelabelarray(srclines):
+    prev=-1
+    go = True
+    retarray = []
+    while go:
+        accum = ''
+        index = srclines.find('>', prev+1)
+        if (index == -1):
+            go = False
+            break
+        prev = index
+        n = 1
+        var = ""
+        while var != ';':
+            var = srclines[index -n]
+            if var==';':
+                break
+            accum+=var
+            n+=1
+        print(accum)
+        retarray.append(int(accum[::-1]))
+    return retarray
+   
+            
+
 
 
 #.encode("utf-8").hex()
@@ -112,6 +137,7 @@ def LineHandle(largest_index):
     global moutnumber
     global lines
     lines = remcomments(lines)
+    labelarray = makelabelarray(lines)
     sublines = lines.split(";")
     i = 0
     while i < len(sublines):
@@ -128,7 +154,7 @@ def LineHandle(largest_index):
             if int(splitparts[0]) > largest_index:
                 outfile.write("_" + splitparts[0] + ": ")
                 largest_index = int(splitparts[0])
-                labelarray.append(int(splitparts[0]))
+                #labelarray.append(int(splitparts[0]))
             else:
                 raise Exception("SyntaxError: Non-Linear line progression at line " + splitparts[0])
         else:

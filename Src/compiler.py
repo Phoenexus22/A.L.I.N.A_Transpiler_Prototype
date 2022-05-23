@@ -28,23 +28,35 @@ def EndFile():
     outfile.close()
 
 def makecsc(instring):
+    validesc = ["a", "b", "f", "n", "r", "t", "v", "'",'d',"q","\\"]# d, q are non standard and are ', ", ? 
     i = 0
     accum = ''
     while (i < len(instring)):
-        accum += "'" + instring[i] + "'"
+        if instring[i] == "\\":
+            if instring[i+1] in validesc:
+                if (instring[i+1] == "d"):
+                    accum += "'\\" + '"' + "'"
+                elif (instring[i+1] == "q"):
+                    accum += "'\\" + '?' + "'"  
+                else:
+                    accum += "'\\" + instring[i+1] + "'" 
+                i+=1
+            else:
+                raise Exception('SyntaxError: Invalid Escape Sequence')
+        else:
+            accum += "'" + instring[i] + "'"
         if (i!=len(instring)-1):
             accum+=','
         i+=1
     return accum
 
-
+    
 def Ramreplace(phrases):
     phrasestrings = [] 
     n = 0
     while n < len(phrases):
             phrasestrings.append("")
             spstrig = list(phrases[n])
-            #print(spstrig)
             blayers = 0
             lorder = [] # -1 means a num linked value. any other int implies the layer its bound to
             x = 0
@@ -148,15 +160,9 @@ def makelabelarray(srclines):
                 break
             accum+=var
             n+=1
-        print(accum)
         retarray.append(int(accum[::-1]))
     return retarray
    
-            
-
-
-
-
 #.encode("utf-8").hex()
 def LineHandle(largest_index):
     global cpynumber
@@ -164,20 +170,15 @@ def LineHandle(largest_index):
     global lines
     lines = remcomments(lines)
     lines = stringhandle(lines)
-    print(lines)
     labelarray = makelabelarray(lines)
     sublines = lines.split(";")
     i = 0
     while i < len(sublines):
-        #print("subline(" + str(i) + ")" + sublines[i])
         sublines[i] = clearspace(sublines[i]) #removes whitespace
         splitparts = sublines[i].split(">")
         if (len(sublines[i]) == 0):
             i+=1
             continue
-        #print(splitparts[0] + "this is the numstring")
-        #print(str(len(splitparts[0])) + "this is the length")
-        #print(str(splitparts[0].encode("utf-8").hex()) + "this is the hex")
         if (not (len(splitparts) < 2)):
             if int(splitparts[0]) > largest_index:
                 outfile.write("_" + splitparts[0] + ": ")
@@ -209,7 +210,6 @@ def LineHandle(largest_index):
                 if (not(f == len(labelarray) -1)):
                     stvar+=","
                 f+=1
-            print(labelarray)
             outfile.write(stvar + "})[" +  str(phrasestrings[0]) + "];}\n") 
 
             #learn how scanf works

@@ -1,8 +1,8 @@
 0>?StartOfFile?
-    mout:"banana",'\n';
+    mout:"banana\n";
     jmp:2,1;
 1>?pineapple?
-    mout:"pineapple",'\n';
+    mout:"pineapple\n";
 2>?apple?
-    mout:"apple",'\n';
+    mout:"apple\n";
 

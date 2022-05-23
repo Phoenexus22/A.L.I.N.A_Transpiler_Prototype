@@ -1,4 +1,5 @@
 #argument order:  source file, compiled file, memory type, memory size
+#to solve the issue of non consecutive labeling- have it as a compiler option so can waste space
 import sys
 import string, binascii
 infile = open(sys.argv[1], "r")

@@ -1,5 +1,6 @@
 #argument order:  source file, compiled file, memory type, memory size
 #to solve the issue of non consecutive labeling- have it as a compiler option so can waste space
+# dual operators currently unsupported - do later
 import sys
 import string, binascii
 infile = open(sys.argv[1], "r")
@@ -62,6 +63,7 @@ def Ramreplace(phrases):
             lorder = [] # -1 means a num linked value. any other int implies the layer its bound to
             x = 0
             while x < len(spstrig):
+                print(lorder)
                 if (spstrig[x] == "$"):
                     phrasestrings[n]+="_RAM_["
                     if (spstrig[x] == "("):
@@ -69,19 +71,19 @@ def Ramreplace(phrases):
                     else:
                         lorder.append(-1)
 
-                elif (spstrig[x] in operators) and (lorder[len(lorder)-1] == -1):
+                elif (spstrig[x] in operators) and len(lorder)>0 and (lorder[len(lorder)-1] == -1):
                     if spstrig[x] == "=":
                         phrasestrings[n] += "]=="
                     else:
                         phrasestrings[n] += "]" + spstrig[x]
                     lorder.pop()
 
-                elif (spstrig[x] == ")" and lorder[len(lorder)-1] == blayers):
+                elif (spstrig[x] == ")" and len(lorder)>0 and lorder[len(lorder)-1] == blayers):
                     phrasestrings[n] +=")]"
                     blayers -=1
                     lorder.pop()
 
-                elif (spstrig[x] == ")" and lorder[len(lorder)-1] == -1):
+                elif (spstrig[x] == ")" and len(lorder)>0 and lorder[len(lorder)-1] == -1):
                     phrasestrings[n] +="])"
                     blayers -=1
                     lorder.pop()
@@ -228,7 +230,7 @@ def LineHandle(largest_index):
         elif fsplit[0] == "mset": #moves multiple values into memory
             p = 1
             while p < len(phrasestrings):
-                outfile.write("_RAM_[" + phrasestrings[0] + "+" + str(p) + "-1]=" + phrasestrings[p] + ";\n")
+                outfile.write("_RAM_[" + phrasestrings[0] + "+" + str(p-1) + "]=" + phrasestrings[p] + ";\n")
                 p+=1
         elif fsplit[0] == "die":
             outfile.write("return " + phrasestrings[0] +";\n")

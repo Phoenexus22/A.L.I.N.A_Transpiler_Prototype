@@ -240,7 +240,25 @@ def LineHandle(largest_index):
             while p < len(phrasestrings):
                 outfile.write('printf("%c",(char) ' + phrasestrings[p] + ');\n')
                 p+=1
-        i+=1
+
+        elif fsplit[0] == "ujmp":    # moves the program pointer (Label to jump to)
+            # this code only works for consecutive labels
+            f = 0
+            stvar = "goto *((void*[]){"
+            while (f < len(labelarray)):
+                stvar+="&&_" + str(labelarray[f])
+                if (not(f == len(labelarray) -1)):
+                    stvar+=","
+                f+=1
+            outfile.write(stvar + "})[" +  str(phrasestrings[0]) + "];\n") 
+
+        elif fsplit[0] == "fjmp":    # moves the program pointer (Label to jump to (must be int), condition (0=false else=true))
+            f = 0
+            stvar = "if(" + phrasestrings[1] + "){goto _" + str(int(phrasestrings[0])) + "}\n" # first value must be int
+
+        elif fsplit[0] == "ufjmp":    # moves the program pointer (Label to jump to (must be int), condition (0=false else=true))
+            f = 0
+            stvar = "goto _" + str(int(phrasestrings[0])) + ";\n" # first value must be int
 
     
 

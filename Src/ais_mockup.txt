@@ -1,0 +1,2 @@
+c header dependancies  [make sure these don't double up in compiler]
+instruction name : python code, any (python) global variables required

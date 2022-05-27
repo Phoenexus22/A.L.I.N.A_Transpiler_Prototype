@@ -1,8 +1,12 @@
-0>?3x+1?
+`memorysize,type,stacksize`
+`<init:240,u32,240>`
+`<include:"std.ain","clio.ain">`
+`<insert:'ins.ali'>`
+0>`3x+1`
     set:0,1;
-1>?larger loop?
+1>`larger loop`
     set:1,$0;
-    2>?smaller loop?
+    2>`smaller loop`
         jmp:3,($1=1);
         jmp:4,($1%2=0);
         jmp:5,1;
@@ -12,11 +16,11 @@
 mout:"DONE";
 die:0;
 
-4>?/2?
+4>`/2`
     set:1,$1/2;
     jmp:2,1;
 
-5>?*3+1?
+5>`*3+1`
     set:1,($1*3)+1;
     jmp:2,1;
 

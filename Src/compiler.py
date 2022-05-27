@@ -9,7 +9,7 @@ outfile = open(sys.argv[2], "w")
 outfile.write('#include <stdio.h>\n')
 outfile.write('#include "typedef.h"\n')
 outfile.write('int main(int argc, char *argv[]){\n')
-global vartype
+global vartype #will be determined by compiler instructions 
 memorysize = ""
 operators = ["+","-","/","*","~","|","&","^","||","&&", "=", "!", ">", "<", "%"]
 intchars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"] 
@@ -30,7 +30,7 @@ def EndFile():
     outfile.close()
 
 def makecsc(instring):
-    validesc = ["a", "b", "f", "n", "r", "t", "v", "'",'d',"q","\\"]# d, q are non standard and are ', ", ? 
+    validesc = ["a", "b", "f", "n", "r", "t", "v", "'",'d',"?","\\", "g"]# d, g are non standard and are  ", `
     i = 0
     accum = ''
     while (i < len(instring)):
@@ -40,6 +40,8 @@ def makecsc(instring):
                     accum += "'\\" + '"' + "'"
                 elif (instring[i+1] == "q"):
                     accum += "'\\" + '?' + "'"  
+                elif (instring[i+1] == "g"):
+                    accum += "'`'"  
                 else:
                     accum += "'\\" + instring[i+1] + "'" 
                 i+=1
@@ -120,9 +122,9 @@ def clearspace(invar):
     return invar
 
 def remcomments(input):
-    spl = input.split("?")
+    spl = input.split("`")
     if (len(spl)%2==0):
-        raise Exception("SyntaxError: Comment Character (?) without partner")
+        raise Exception("SyntaxError: Comment Character (`) without partner")
     output = ""
     i = 0
     while i < len(spl):
